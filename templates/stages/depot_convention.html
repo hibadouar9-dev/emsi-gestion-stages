@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Déposer une convention{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📄 Déposer une convention de stage</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nom de l'entreprise *</label>
+                    <input type="text" name="entreprise_nom" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Adresse de l'entreprise</label>
+                    <textarea name="entreprise_adresse" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tuteur entreprise *</label>
+                    <input type="text" name="tuteur_entreprise_nom" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Email tuteur *</label>
+                    <input type="email" name="tuteur_entreprise_email" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Téléphone tuteur</label>
+                    <input type="text" name="tuteur_entreprise_telephone" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Date début *</label>
+                    <input type="date" name="date_debut" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Date fin *</label>
+                    <input type="date" name="date_fin" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mission / Description *</label>
+                <textarea name="mission" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Convention signée (PDF) *</label>
+                <input type="file" name="convention_originale" accept=".pdf" class="form-control" required>
+                <small class="text-muted">Uploader le PDF de votre convention signée par l'entreprise</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">📤 Déposer la convention</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Conventions à valider{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-warning">
+        <h4 class="mb-0">✅ Conventions à valider</h4>
+    </div>
+    <div class="card-body">
+        {% if conventions %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Entreprise</th>
+                        <th>Dates</th>
+                        <th>Mission</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conv in conventions %}
+                    <tr>
+                        <td>{{ conv.etudiant.username }}<br><small>{{ conv.etudiant.filiere }}</small></td>
+                        <td>{{ conv.entreprise_nom }}</td>
+                        <td>{{ conv.date_debut|date:"d/m/Y" }} → {{ conv.date_fin|date:"d/m/Y" }}</td>
+                        <td>{{ conv.mission|truncatechars:50 }}</td>
+                        <td>
+                            <a href="{% url 'valider_convention' conv.id %}" class="btn btn-sm btn-success">✅ Valider</a>
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#refuserModal{{ conv.id }}">❌ Refuser</button>
+                            
+                            <!-- Modal Refuser -->
+                            <div class="modal fade" id="refuserModal{{ conv.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" action="{% url 'refuser_convention' conv.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title">Refuser la convention</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <label class="form-label">Motif du refus :</label>
+                                                <textarea name="commentaire" class="form-control" rows="3" required></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                <button type="submit" class="btn btn-danger">Confirmer le refus</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-success text-center">
+            ✅ Aucune convention en attente de validation.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base_accueil.html' %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<!-- SECTION HERO -->
+<section class="hero-section text-center py-5" style="background-color: #007bff;">
+    <div class="container py-5">
+        <h1 class="display-3 fw-bold text-white mb-4">
+            🎓 EMSI Stages
+        </h1>
+        <p class="lead fs-3 text-white mb-4">
+            La plateforme de gestion des stages
+        </p>
+        <p class="mb-5 fs-5 text-white-50">
+            Gérez vos conventions, trouvez des offres de stage et suivez votre parcours
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'connexion' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                🔐 Se connecter
+            </a>
+            <a href="{% url 'inscription' %}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+                📝 S'inscrire
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION STATISTIQUES -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h2 class="fw-bold text-primary">15+</h2>
+                    <p class="text-muted">Étudiants</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-building fa-3x text-success mb-3"></i>
+                    <h2 class="fw-bold text-success">10+</h2>
+                    <p class="text-muted">Entreprises partenaires</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                    <h2 class="fw-bold text-primary">12+</h2>
+                    <p class="text-muted">Conventions traitées</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
+                    <h2 class="fw-bold text-success">8+</h2>
+                    <p class="text-muted">Offres de stage</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION FONCTIONNALITÉS -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold text-primary">🎯 Nos fonctionnalités</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-upload fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold">Dépôt de conventions</h5>
+                        <p class="card-text text-muted">Déposez vos conventions en ligne et suivez leur validation</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h5 class="card-title fw-bold">Workflow de validation</h5>
+                        <p class="card-text text-muted">Validation à 3 niveaux : Tuteur → Responsable → Service</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-briefcase fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold">Offres de stage</h5>
+                        <p class="card-text text-muted">Consultez et postulez aux offres des entreprises partenaires</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-file-pdf fa-3x text-success mb-3"></i>
+                        <h5 class="card-title fw-bold">Génération PDF</h5>
+                        <p class="card-text text-muted">Génération automatique des conventions au format EMSI</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold">Tableaux de bord</h5>
+                        <p class="card-text text-muted">Indicateurs personnalisés pour chaque rôle</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-file-excel fa-3x text-success mb-3"></i>
+                        <h5 class="card-title fw-bold">Export Excel</h5>
+                        <p class="card-text text-muted">Exportez les conventions validées</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION COMMENT ÇA MARCHE -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold text-primary">📋 Comment ça marche ?</h2>
+        <div class="row">
+            <div class="col-md-3 text-center mb-4">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">
+                    1
+                </div>
+                <h5 class="fw-bold">Inscription</h5>
+                <p class="text-muted small">Créez votre compte étudiant</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">
+                    2
+                </div>
+                <h5 class="fw-bold">Dépôt</h5>
+                <p class="text-muted small">Déposez votre convention PDF</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">
+                    3
+                </div>
+                <h5 class="fw-bold">Validation</h5>
+                <p class="text-muted small">Validation tuteur et responsable</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">
+                    4
+                </div>
+                <h5 class="fw-bold">Finalisation</h5>
+                <p class="text-muted small">Validation par le service</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION APPEL À ACTION -->
+<section class="py-5" style="background-color: #28a745;">
+    <div class="container text-center text-white">
+        <h2 class="mb-4 fw-bold">Prêt à commencer ?</h2>
+        <p class="mb-4 fs-5">Rejoignez les autres étudiants sur EMSI Stages</p>
+        <a href="{% url 'inscription' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+            🚀 Créer mon compte
+        </a>
+    </div>
+</section>
+{% endblock %}

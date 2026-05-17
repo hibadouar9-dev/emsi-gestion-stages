@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Refuser convention{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">❌ Refuser la convention</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Étudiant :</strong> {{ convention.etudiant.username }}</p>
+                <p><strong>Entreprise :</strong> {{ convention.entreprise_nom }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Motif du refus :</label>
+                        <textarea name="commentaire" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Confirmer le refus</button>
+                    <a href="{% url 'conventions_a_valider' %}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

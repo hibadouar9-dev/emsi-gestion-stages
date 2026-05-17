@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Mes candidatures{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📋 Mes candidatures</h4>
+    </div>
+    <div class="card-body">
+        {% if candidatures %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Offre</th>
+                        <th>Entreprise</th>
+                        <th>Date candidature</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in candidatures %}
+                    <tr>
+                        <td>{{ c.offre.titre }}</td>
+                        <td>{{ c.offre.lieu }}</td>
+                        <td>{{ c.date_candidature|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                                <span class="badge bg-warning">⏳ En attente</span>
+                            {% elif c.statut == 'acceptee' %}
+                                <span class="badge bg-success">✅ Acceptée</span>
+                            {% else %}
+                                <span class="badge bg-danger">❌ Refusée</span>
+                            {% endif %}
+                         </td>
+                     </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            📭 Vous n'avez pas encore postulé.
+            <a href="{% url 'consulter_offres' %}" class="alert-link">Voir les offres</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

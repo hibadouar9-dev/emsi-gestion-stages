@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Gérer candidatures{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📊 Gestion des candidatures</h4>
+    </div>
+    <div class="card-body">
+        {% if candidatures %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Offre</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in candidatures %}
+                    <tr>
+                        <td>{{ c.etudiant.username }}<br><small>{{ c.etudiant.filiere }}</small></td>
+                        <td>{{ c.offre.titre }}</td>
+                        <td>{{ c.message|truncatechars:50 }}</td>
+                        <td>{{ c.date_candidature|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                                <span class="badge bg-warning">⏳ En attente</span>
+                            {% elif c.statut == 'acceptee' %}
+                                <span class="badge bg-success">✅ Acceptée</span>
+                            {% else %}
+                                <span class="badge bg-danger">❌ Refusée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                                <a href="{% url 'modifier_statut_candidature' c.id 'acceptee' %}" class="btn btn-sm btn-success">✅ Accepter</a>
+                                <a href="{% url 'modifier_statut_candidature' c.id 'refusee' %}" class="btn btn-sm btn-danger">❌ Refuser</a>
+                            {% else %}
+                                <span class="text-muted">Déjà traitée</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            📭 Aucune candidature pour le moment.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Postuler{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">📝 Postuler à : {{ offre.titre }}</h4>
+            </div>
+            <div class="card-body">
+                {% if deja_postule %}
+                    <div class="alert alert-warning">
+                        ⚠️ Vous avez déjà postulé à cette offre.
+                        <a href="{% url 'consulter_offres' %}" class="alert-link">Retour aux offres</a>
+                    </div>
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Lettre de motivation / Message</label>
+                            <textarea name="message" class="form-control" rows="5" placeholder="Décrivez votre motivation, vos compétences et disponibilités..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Envoyer ma candidature</button>
+                        <a href="{% url 'consulter_offres' %}" class="btn btn-secondary">Annuler</a>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

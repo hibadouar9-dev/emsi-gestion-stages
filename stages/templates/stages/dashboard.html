@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📊 Tableau de bord</h4>
+    </div>
+    <div class="card-body">
+        <h5>Bienvenue, {{ user.first_name }} {{ user.last_name }} !</h5>
+        <p>Rôle : <strong>{{ user.get_role_display }}</strong></p>
+        <p>Campus : {{ user.campus }} | Filière : {{ user.filiere }}</p>
+    </div>
+</div>
+{% endblock %}

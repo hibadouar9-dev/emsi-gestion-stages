@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Offres de stage{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">📢 Offres de stage disponibles</h4>
+    </div>
+    <div class="card-body">
+        {% if offres %}
+        <div class="row">
+            {% for offre in offres %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ offre.titre }}</h5>
+                        <p class="card-text">{{ offre.description|truncatechars:150 }}</p>
+                        <hr>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ offre.lieu }}</p>
+                        <p><i class="fas fa-clock"></i> Durée : {{ offre.duree }}</p>
+                        <p><i class="fas fa-calendar-alt"></i> Date limite : {{ offre.date_limite|date:"d/m/Y" }}</p>
+                        <a href="{% url 'postuler_offre' offre.id %}" class="btn btn-primary mt-2">📝 Postuler</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            📭 Aucune offre disponible.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
