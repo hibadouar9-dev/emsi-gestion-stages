@@ -74,14 +74,12 @@ class OffreStage(models.Model):
 
 class Evaluation(models.Model):
     convention = models.OneToOneField(Convention, on_delete=models.CASCADE, related_name='evaluation')
-    note_entreprise = models.IntegerField(null=True, blank=True)
-    commentaire_entreprise = models.TextField(blank=True)
     note_tuteur_emsi = models.IntegerField(null=True, blank=True)
     commentaire_tuteur_emsi = models.TextField(blank=True)
     date_evaluation = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"Évaluation {self.convention}"
+        return f"Évaluation {self.convention.id} - {self.note_tuteur_emsi}/20"
     
 class Candidature(models.Model):
     STATUT_CHOICES = [

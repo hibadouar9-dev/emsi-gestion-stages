@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Service{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">📊 Tableau de bord - Service des stages</h2>
+    
+    
+
+    <div class="row">
+        <!-- Dernières conventions -->
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📋 Dernières conventions</h5>
+                </div>
+                <div class="card-body">
+                    {% if dernieres_conventions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Étudiant</th>
+                                    <th>Entreprise</th>
+                                    <th>Date dépôt</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for conv in dernieres_conventions %}
+                                <tr>
+                                    <td>{{ conv.etudiant.username }}</br><small>{{ conv.etudiant.filiere }}</small></td>
+                                    <td>{{ conv.entreprise_nom }}</br><small>{{ conv.date_debut|date:"d/m/Y" }}</small></td>
+                                    <td>{{ conv.date_depot|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        <span class="badge {% if conv.statut == 'validee' %}bg-success{% elif conv.statut == 'refusee' %}bg-danger{% else %}bg-warning{% endif %}">
+                                            {{ conv.get_statut_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">Aucune convention</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">⚡ Actions rapides</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'liste_offres_service' %}" class="btn btn-primary">
+                            <i class="fas fa-briefcase"></i> Gérer les offres
+                        </a>
+                        <a href="{% url 'gerer_candidatures' %}" class="btn btn-info text-white">
+                            <i class="fas fa-users"></i> Gérer les candidatures
+                        </a>
+                        <a href="{% url 'export_excel' %}" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Exporter les conventions validées (Excel)
+                        </a>
+                        <a href="{% url 'conventions_a_valider' %}" class="btn btn-warning">
+                            <i class="fas fa-check-circle"></i> Valider les conventions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,27 +7,37 @@
     <title>EMSI Stages - {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- NAVBAR SIMPLIFIÉE - BLEU -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #007bff;">
+<body class="bg-soft-light">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top py-3">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="{% url 'accueil' %}">
-                🏫 EMSI Stages
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'accueil' %}">
+                <img src="{% static 'logo.jpg' %}" alt="Logo EMSI" class="rounded-circle" style="height:42px; width:auto; object-fit:cover; border:2px solid #0d6efd;">
+                <span>EMSI Stages</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'accueil' %}">Accueil</a>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item mx-1">
+                        <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#fonctionnalites">Fonctionnalités</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#fonctionnalites">Fonctionnalités</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#comment-ca-marche">Comment ça marche</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#comment-ca-marche">Étapes</a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="btn btn-primary btn-sm px-4" href="{% url 'connexion' %}">Connexion</a>
                     </li>
                 </ul>
             </div>
@@ -35,12 +46,31 @@
 
     {% block content %}{% endblock %}
 
-    <!-- FOOTER SIMPLIFIÉ -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0 small">
-                Projet PFA - EMSI - Données fictives © 2026
-            </p>
+    <footer class="py-5">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-4">
+                    <img src="{% static 'logo.jpg' %}" alt="Logo EMSI" style="height:48px; object-fit:cover;" class="mb-3">
+                    <p>Une plateforme moderne pour gérer les conventions de stage, du dépôt jusqu'à la validation.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white mb-3">Liens rapides</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'connexion' %}">Connexion</a></li>
+                        <li><a href="{% url 'inscription' %}">Inscription</a></li>
+                        <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4" id="contact">
+                    <h6 class="text-white mb-3">Contact</h6>
+                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>contact@emsi-stages.ma</p>
+                    <p><i class="fas fa-phone me-2"></i>+212 6 00 00 00 00</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 text-white-50">
+                © 2026 EMSI Stages — Plateforme de gestion de stages
+            </div>
         </div>
     </footer>
 

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import InscriptionForm, ConnexionForm
+from .forms import InscriptionForm, ConnexionForm , ConventionForm, OffreStageForm
+from .models import Utilisateur, Convention, OffreStage, Candidature
 
 def inscription(request):
     if request.method == 'POST':
@@ -28,8 +29,8 @@ def connexion(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Bonjour {user.username} !')
-                return redirect('dashboard')
-        messages.error(request, 'Nom d\'utilisateur ou mot de passe incorrect.')
+                return redirect('dashboard')  # ← TOUS vers dashboard
+        messages.error(request, 'Identifiants incorrects')
     else:
         form = ConnexionForm()
     return render(request, 'stages/connexion.html', {'form': form})
@@ -39,12 +40,49 @@ def deconnexion(request):
     messages.info(request, 'Vous êtes déconnecté.')
     return redirect('connexion')
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import Utilisateur, Convention, OffreStage, Evaluation
+
 @login_required
 def dashboard(request):
-    return render(request, 'stages/dashboard.html', {'user': request.user})
-
-from .forms import ConventionForm
-from .models import Convention
+    user = request.user
+    
+    if user.role == 'etudiant':
+        conventions = Convention.objects.filter(etudiant=user)
+        candidatures = Candidature.objects.filter(etudiant=user).count()
+        
+        context = {
+            'total_conventions': conventions.count(),
+            'conventions_validees': conventions.filter(statut='validee').count(),
+            'total_offres': OffreStage.objects.filter(active=True).count(),
+            'conventions_attente': conventions.filter(statut='attente_service').count(),
+            'dernieres_conventions': conventions.order_by('-date_depot')[:5],
+            'candidatures': candidatures,
+            'user': user,
+        }
+        return render(request, 'stages/dashboard.html', context)
+    
+    elif user.role == 'service':
+        context = {
+            'total_conventions': Convention.objects.count(),
+            'conventions_attente': Convention.objects.filter(statut='attente_service').count(),
+            'conventions_validees': Convention.objects.filter(statut='validee').count(),
+            'offres_actives': OffreStage.objects.filter(active=True).count(),
+            'dernieres_conventions': Convention.objects.order_by('-date_depot')[:5],
+            'user': user,
+        }
+        return render(request, 'stages/dashboard_service.html', context)
+    
+    else:
+        context = {
+            'total_conventions': Convention.objects.count(),
+            'conventions_validees': Convention.objects.filter(statut='validee').count(),
+            'total_offres': OffreStage.objects.filter(active=True).count(),
+            'dernieres_conventions': Convention.objects.order_by('-date_depot')[:5],
+            'user': user,
+        }
+        return render(request, 'stages/dashboard.html', context)
 
 @login_required
 def depot_convention(request):
@@ -75,11 +113,16 @@ def mes_conventions(request):
     conventions = Convention.objects.filter(etudiant=request.user).order_by('-date_depot')
     return render(request, 'stages/mes_conventions.html', {'conventions': conventions})
 
+from datetime import date  # Ajoutez cet import en haut du fichier s'il n'existe pas
+
+
+
 @login_required
 def conventions_a_valider(request):
     user = request.user
     if user.role == 'tuteur':
-        conventions = Convention.objects.filter(statut='attente_tuteur')
+        # Montrer les conventions en attente du tuteur ainsi que les conventions déjà validées
+        conventions = Convention.objects.filter(statut__in=['attente_tuteur', 'validee'])
     elif user.role == 'responsable':
         conventions = Convention.objects.filter(statut='attente_responsable')
     elif user.role == 'service':
@@ -88,7 +131,19 @@ def conventions_a_valider(request):
         messages.error(request, 'Vous n\'avez pas accès à cette page')
         return redirect('dashboard')
     
-    return render(request, 'stages/conventions_a_valider.html', {'conventions': conventions})
+    # Précharger les évaluations liées pour éviter les erreurs côté template
+    evaluations = Evaluation.objects.filter(convention__in=conventions)
+    eval_map = {e.convention_id: e for e in evaluations}
+    # Attacher un attribut 'evaluation' à chaque convention (None si pas d'évaluation)
+    conventions = list(conventions)  # évaluer la queryset
+    for conv in conventions:
+        conv.evaluation = eval_map.get(conv.id)
+
+    # AJOUTEZ 'now' DANS LE CONTEXTE
+    return render(request, 'stages/conventions_a_valider.html', {
+        'conventions': conventions,
+        'now': date.today(),
+    })
 
 @login_required
 def valider_convention(request, convention_id):
@@ -266,3 +321,102 @@ def modifier_statut_candidature(request, candidature_id, statut):
 
 def accueil(request):
     return render(request, 'stages/accueil.html')
+
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def export_excel(request):
+    if request.user.role != 'service':
+        messages.error(request, 'Accès non autorisé')
+        return redirect('dashboard')
+    
+    # Récupérer les conventions validées
+    conventions = Convention.objects.filter(statut='validee').order_by('-date_depot')
+    
+    # Créer le classeur Excel
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Conventions validées"
+    
+    # En-têtes
+    headers = ['Étudiant', 'Email', 'Filière', 'Entreprise', 'Tuteur entreprise', 
+               'Date début', 'Date fin', 'Date dépôt', 'Statut']
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = Font(bold=True, color="FFFFFF")
+        cell.fill = PatternFill(start_color="007bff", end_color="007bff", fill_type="solid")
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Données
+    for row, conv in enumerate(conventions, 2):
+        ws.cell(row=row, column=1, value=conv.etudiant.username)
+        ws.cell(row=row, column=2, value=conv.etudiant.email)
+        ws.cell(row=row, column=3, value=conv.etudiant.filiere or '-')
+        ws.cell(row=row, column=4, value=conv.entreprise_nom)
+        ws.cell(row=row, column=5, value=conv.tuteur_entreprise_nom)
+        ws.cell(row=row, column=6, value=conv.date_debut.strftime('%d/%m/%Y'))
+        ws.cell(row=row, column=7, value=conv.date_fin.strftime('%d/%m/%Y'))
+        ws.cell(row=row, column=8, value=conv.date_depot.strftime('%d/%m/%Y %H:%M'))
+        ws.cell(row=row, column=9, value=conv.get_statut_display())
+    
+    # Ajuster les colonnes
+    for col in ws.columns:
+        max_length = 0
+        col_letter = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 30)
+        ws.column_dimensions[col_letter].width = adjusted_width
+    
+    # Créer la réponse HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=conventions_validees.xlsx'
+    wb.save(response)
+    
+    return response
+
+from datetime import date
+from .models import Evaluation
+
+from datetime import date
+
+@login_required
+def evaluer_convention(request, convention_id):
+    convention = get_object_or_404(Convention, id=convention_id)
+    
+    # Vérifier que c'est un tuteur
+    if request.user.role != 'tuteur':
+        messages.error(request, 'Seuls les tuteurs peuvent évaluer')
+        return redirect('dashboard')
+    
+    # Vérifier que la convention est validée
+    if convention.statut != 'validee':
+        messages.error(request, 'Cette convention n\'est pas encore validée')
+        return redirect('dashboard')
+    
+    # Vérifier que le stage est terminé
+    if convention.date_fin > date.today():
+        messages.error(request, f'L\'évaluation sera disponible après le {convention.date_fin.strftime("%d/%m/%Y")}')
+        return redirect('dashboard')
+    
+    # Récupérer ou créer l'évaluation
+    evaluation, created = Evaluation.objects.get_or_create(convention=convention)
+    
+    if request.method == 'POST':
+        evaluation.note_tuteur_emsi = request.POST.get('note')
+        evaluation.commentaire_tuteur_emsi = request.POST.get('commentaire')
+        evaluation.save()
+        messages.success(request, f'Évaluation enregistrée pour {convention.etudiant.username}')
+        return redirect('dashboard')
+    
+    return render(request, 'stages/evaluation.html', {
+        'convention': convention,
+        'evaluation': evaluation,
+    })

@@ -6,7 +6,7 @@ urlpatterns = [
     path('connexion/', views.connexion, name='connexion'),  # ← Ajoutez le chemin
     path('inscription/', views.inscription, name='inscription'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+   path('dashboard/', views.dashboard, name='dashboard'),
     path('depot/', views.depot_convention, name='depot_convention'),
     path('mes-conventions/', views.mes_conventions, name='mes_conventions'),
     path('a-valider/', views.conventions_a_valider, name='conventions_a_valider'),
@@ -21,4 +21,6 @@ urlpatterns = [
     path('mes-candidatures/', views.mes_candidatures, name='mes_candidatures'),
     path('service/candidatures/', views.gerer_candidatures, name='gerer_candidatures'),
     path('service/candidatures/<int:candidature_id>/<str:statut>/', views.modifier_statut_candidature, name='modifier_statut_candidature'),
+    path('export-excel/', views.export_excel, name='export_excel'),
+path('evaluer/<int:convention_id>/', views.evaluer_convention, name='evaluer_convention'),
 ]

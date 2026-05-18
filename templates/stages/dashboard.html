@@ -2,14 +2,81 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="card shadow">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">📊 Tableau de bord</h4>
+<div class="container mt-4">
+    <h2 class="mb-4">📊 Tableau de bord</h2>
+    
+    <!-- 3 cartes seulement -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 bg-info text-white">
+                <div class="card-body py-4">
+                    <i class="fas fa-file-alt fa-3x mb-2"></i>
+                    <h2 class="mb-0">{{ total_conventions }}</h2>
+                    <p class="mb-0">Mes conventions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 bg-success text-white">
+                <div class="card-body py-4">
+                    <i class="fas fa-briefcase fa-3x mb-2"></i>
+                    <h2 class="mb-0">{{ total_offres }}</h2>
+                    <p class="mb-0">Offres disponibles</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 bg-warning text-white">
+                <div class="card-body py-4">
+                    <i class="fas fa-check-circle fa-3x mb-2"></i>
+                    <h2 class="mb-0">{{ conventions_validees }}</h2>
+                    <p class="mb-0">Conventions validées</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <h5>Bienvenue, {{ user.first_name }} {{ user.last_name }} !</h5>
-        <p>Rôle : <strong>{{ user.get_role_display }}</strong></p>
-        <p>Campus : {{ user.campus }} | Filière : {{ user.filiere }}</p>
+
+    <!-- Dernières conventions (uniquement celles de l'étudiant connecté) -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📋 Mes dernières conventions</h5>
+                </div>
+                <div class="card-body">
+                    {% if dernieres_conventions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Entreprise</th>
+                                    <th>Date dépôt</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for conv in dernieres_conventions %}
+                                <tr>
+                                    <td>{{ conv.entreprise_nom }}</td>
+                                    <td>{{ conv.date_depot|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <span class="badge {% if conv.statut == 'validee' %}bg-success{% elif conv.statut == 'refusee' %}bg-danger{% else %}bg-warning{% endif %}">
+                                            {{ conv.get_statut_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">Vous n'avez pas encore déposé de convention.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
+
+

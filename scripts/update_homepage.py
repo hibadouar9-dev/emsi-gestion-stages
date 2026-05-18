@@ -1,6 +1,162 @@
-﻿{% extends 'base_accueil.html' %}
-{% load static %}
+from pathlib import Path
 
+base = '''{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMSI Stages - {% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #212529;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.35rem;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        }
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0d3b9c 0%, #0d6efd 52%, #6f42c1 100%);
+            color: white;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 28%),
+                        radial-gradient(circle at bottom right, rgba(255,255,255,0.15), transparent 22%);
+            pointer-events: none;
+        }
+        .hero-card {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(255,255,255,0.65);
+            box-shadow: 0 25px 60px rgba(16, 41, 77, 0.12);
+            backdrop-filter: blur(16px);
+        }
+        .feature-card, .stats-card, .step-card {
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover, .stats-card:hover, .step-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 60px rgba(44, 84, 212, 0.12);
+        }
+        .section-title {
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            width: 55px;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #0d6efd);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -16px;
+            border-radius: 999px;
+        }
+        footer {
+            background: #05132e;
+            color: rgba(255,255,255,0.75);
+        }
+        footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+        }
+        .badge-soft-primary {
+            background: rgba(56, 103, 214, 0.12);
+            color: #1143db;
+        }
+        .badge-soft-success {
+            background: rgba(48, 166, 78, 0.14);
+            color: #0f842d;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'accueil' %}">
+                <img src="{% static 'logo.jpg' %}" alt="Logo EMSI" class="rounded-circle" style="height:42px; width:auto; object-fit:cover; border:2px solid #0d6efd;">
+                <span>EMSI Stages</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item mx-1">
+                        <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#fonctionnalites">Fonctionnalités</a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#comment-ca-marche">Étapes</a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="btn btn-primary btn-sm px-4" href="{% url 'connexion' %}">Connexion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer class="py-5">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-4">
+                    <img src="{% static 'logo.jpg' %}" alt="Logo EMSI" style="height:48px; object-fit:cover;" class="mb-3">
+                    <p>Une plateforme moderne pour gérer les conventions de stage, du dépôt jusqu'à la validation.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white mb-3">Liens rapides</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'connexion' %}">Connexion</a></li>
+                        <li><a href="{% url 'inscription' %}">Inscription</a></li>
+                        <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4" id="contact">
+                    <h6 class="text-white mb-3">Contact</h6>
+                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>contact@emsi-stages.ma</p>
+                    <p><i class="fas fa-phone me-2"></i>+212 6 00 00 00 00</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 text-white-50">
+                © 2026 EMSI Stages — Plateforme de gestion de stages
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>'''
+
+accueil = '''{% extends 'base_accueil.html' %}
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
@@ -171,4 +327,6 @@
         <a href="{% url 'inscription' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">Créer mon compte</a>
     </div>
 </section>
-{% endblock %}
+{% endblock %}'''
+Path('templates/stages/accueil.html').write_text(accueil, encoding='utf-8')
+"
